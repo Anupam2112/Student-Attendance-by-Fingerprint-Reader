@@ -1,91 +1,96 @@
-# Automatic Attendance
+# Automatic Attendance System with RFID and ESP32
 
-A Java-based application designed for efficient and automated attendance tracking. This project uses Docker Compose to manage its environment and supports development in IntelliJ IDEA.
+This project is a complete solution for automated attendance tracking. It integrates an **embedded hardware system** (Arduino-based) with a **Java Spring Boot application** for data management and visualization.
 
----
+## 📌 Description
 
-## Prerequisites
+The system allows users to scan their RFID cards using an RC522 reader connected to an Arduino Uno. Once a card is detected, the information is displayed on an LCD screen and sent via an ESP8266 WiFi module to the Java backend API, where the attendance is logged.
 
-Before setting up the project, ensure the following tools are installed:
-
-1. [IntelliJ IDEA](https://www.jetbrains.com/idea/download/)
-2. [Docker Desktop](https://www.docker.com/products/docker-desktop)
+This solution was implemented as part of a university graduation project.
 
 ---
 
-## Setup and Installation
+## ✅ Features
 
-### 1. Install IntelliJ IDEA
-- Download IntelliJ IDEA Community or Ultimate from [JetBrains](https://www.jetbrains.com/idea/download/).
-- Follow the installation steps for your OS.
-- Open IntelliJ and set up the Java JDK if prompted.
+- RFID card detection and identification
+- Real-time display on I2C LCD
+- WiFi-based data transmission using ESP8266 (ESP-01)
+- REST API for attendance submission
+- Java Spring Boot backend
+- Modular architecture (DTOs, Controllers, Services, Repositories)
+- MySQL/SQL Server integration
 
-### 2. Install Docker Desktop
-- Download Docker Desktop from [Docker](https://www.docker.com/products/docker-desktop).
-- Install and start Docker Desktop. Ensure Docker is running before proceeding.
+---
 
-### 3. Clone the Repository
-Clone this repository using the command below:
+## 🛠 Technologies Used
+
+### Backend (Java):
+- Java 17
+- Spring Boot
+- Spring MVC, Spring Data JPA
+- REST API
+- Maven
+
+### Embedded:
+- Arduino Uno
+- MFRC522 RFID Reader
+- ESP8266 (ESP-01)
+- I2C LCD 16x2
+- C++ (Arduino IDE)
+
+---
+
+## 🔧 Hardware Setup
+
+| Component       | Description                             |
+|----------------|-----------------------------------------|
+| Arduino Uno     | Main microcontroller                    |
+| RC522           | RFID reader for tag/card scanning       |
+| ESP-01 (ESP8266)| WiFi module for HTTP POST transmission  |
+| LCD 16x2 I2C    | Displays user/card information          |
+| RFID Card/Tag   | Used to register presence               |
+
+Wiring diagrams and connection details can be found in the `esp32/` folder.
+
+---
+
+## 🚀 How to Use
+
+### Backend Java Application:
+
 ```bash
-git clone https://github.com/Candu34/Automatic_attendance.git
-cd Automatic_attendance
+cd Automatic_attendance-main
+./mvnw spring-boot:run
 ```
 
-### 4. Open the Project in IntelliJ IDEA
-1. Launch IntelliJ IDEA.
-2. Select **File > Open** and navigate to the project folder.
-3. IntelliJ will detect the Maven or Gradle structure and import the project dependencies.
+Make sure to configure your database credentials in `src/main/resources/application.properties`.
 
-### 5. Start Docker Containers
-1. Open the **Docker** tab in IntelliJ (available in the toolbar).
-2. Locate the `docker-compose.yml` file in the project directory.
-3. Right-click on the file and select **Run 'docker-compose up'** to start the containers.
+### Arduino/ESP32 Code:
 
-### 6. Verify the Database Connection
-1. Open the **Database** tab in IntelliJ IDEA (use **View > Tool Windows > Database** if it's not visible).
-2. Click the **+** icon and select **Data Source > PostgreSQL** (or the database you are using).
-3. Fill in the connection details as specified in `docker-compose.yml`:
-   - Host: `localhost`
-   - Port: `<Database Port>`
-   - Database: `<Database Name>`
-   - Username: `<DB Username>`
-   - Password: `<DB Password>`
-4. Test the connection and save it.
+1. Open `esp32/Cod_ESP32.ino` in Arduino IDE.
+2. Install libraries: `MFRC522`, `LiquidCrystal_I2C`, `ESP8266WiFi`, `WiFiClient`, `ESP8266HTTPClient`
+3. Update WiFi credentials and backend URL.
+4. Upload the sketch to the ESP-01 using a USB adapter.
 
-### 7. Insert Data into the Database
-1. Open the **Database** tab in IntelliJ IDEA.
-2. Locate your database connection and open the **Console**.
-3. Run the following SQL commands to populate the database:
+---
 
-```sql
-insert into student_class (name) values ('4LF711');
-insert into student_class (name) values ('123');
-insert into student_class (name) values ('122');
+## 📂 Project Structure
 
-insert into student (email, full_name, rfid_card_id, class_id) values ('liviubelu@student.unitbv.ro', 'Liviu Belu', 'F9 B0 07 E5', 2);
-insert into student (email, full_name, rfid_card_id, class_id) values ('brujbeanugabriel@student.unitbv.ro', 'Brujbeanu Gabriel', '13 E1 54 CD', 2);
-insert into student (email, full_name, rfid_card_id, class_id) values ('canduion@student.unitbv.ro', 'Candu Ion', 'b3 78 cc 2c', 3);
-insert into student (email, full_name, rfid_card_id, class_id) values ('vasilecenusa@student.unitbv.ro', 'Vasile Cenusa', '07 79 8e 02', 3);
-
-insert into student (email, full_name, rfid_card_id, class_id) values ('kjkdadsadad', 'Test test', 'F9 B0 07 E5', 2); 
-insert into student (email, full_name, rfid_card_id, class_id) values ('adsadasdad', 'Test2', '13 E1 54 CD', 2); 
-insert into student (email, full_name, rfid_card_id, class_id) values ('cdadsadadada', 'Test1 test1', 'b3 78 cc 2c', 2); 
-insert into student (email, full_name, rfid_card_id, class_id) values ('adasdasdadasdasdas', 'Vasile Cenusa', '07 79 8e 02', 2);
+```
+Automatic_attendance_with_ESP32/
+│
+├── src/                 # Java Spring Boot source code
+├── esp32/               # Arduino code (.ino)
+├── docker-compose.yml   # (optional) DB + API integration
+├── README.md            # This file
+└── ...
 ```
 
-### 8. View Attendance Records
-1. Open the **Database** tab in IntelliJ IDEA.
-2. Locate your database connection and open the **Console**.
-3. Run the following SQL command to view attendance records:
+---
 
-```sql
-select * from attendance;
-```
+## 👤 Author
 
-### 9. Run the Application
-1. Ensure that all Docker containers are running.
-2. Use IntelliJ's **Run/Debug Configuration** to start the application.
-3. Access the application via the specified URL in your browser or API testing tool.
-
-
+**Belu Liviu**  
+Faculty of Electrical Engineering and Computer Science  
+Transilvania University of Brașov
 
