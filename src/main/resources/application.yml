@@ -1,0 +1,11 @@
+spring:
+  application:
+    name=Automatic_attendance
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+server:
+  port: 8080
